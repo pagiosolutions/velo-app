@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Velo — Velocidade e clareza para sua operação. O app que move seu negócio.">
+<title>Velo — Move rápido.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ─── TOKENS ─── */
+  :root {
+    --bg:       #07080f;
+    --bg2:      #0b0d17;
+    --surface:  #10131f;
+    --surface2: #161a2a;
+    --border:   rgba(255,255,255,0.06);
+    --border-h: rgba(255,255,255,0.12);
+
+    --v:        #00E5FF;   /* velo cyan — principal */
+    --v2:       #0070F3;   /* azul elétrico */
+    --v3:       #7928CA;   /* roxo profundo */
+    --vg:       linear-gradient(135deg, #00E5FF, #0070F3);
+
+    --text:     #c8cedd;
+    --muted:    #5a6480;
+    --white:    #ffffff;
+
+    --r:        14px;
+    --font-d:   'Bebas Neue', sans-serif;
+    --font-b:   'Outfit', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-b);
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* grain */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity: .025;
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  a { text-decoration: none; color: inherit; }
+  .container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+
+  /* ─── UTILS ─── */
+  .chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 11px; font-weight: 600; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--v);
+    background: rgba(0,229,255,.08);
+    border: 1px solid rgba(0,229,255,.2);
+    border-radius: 100px; padding: 5px 14px;
+  }
+  .chip::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--v); animation: blink 2s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+  .display {
+    font-family: var(--font-d);
+    font-size: clamp(52px, 8vw, 96px);
+    color: var(--white);
+    line-height: .95;
+    letter-spacing: .01em;
+  }
+  .display .cyan { color: var(--v); }
+  .display .stroke {
+    -webkit-text-stroke: 1.5px var(--white);
+    color: transparent;
+  }
+
+  .section-tag {
+    font-size: 11px; letter-spacing: .15em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 12px; display: block;
+  }
+  .section-h {
+    font-family: var(--font-d);
+    font-size: clamp(36px, 5vw, 56px);
+    color: var(--white); line-height: 1; letter-spacing: .02em;
+    margin-bottom: 16px;
+  }
+  .section-p { font-size: 16px; color: var(--muted); line-height: 1.8; max-width: 500px; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 26px; border-radius: 100px;
+    font-family: var(--font-b); font-size: 14px; font-weight: 600;
+    cursor: pointer; border: none; transition: all .22s ease;
+    letter-spacing: .02em;
+  }
+  .btn-cyan {
+    background: var(--v); color: #000;
+    box-shadow: 0 0 30px rgba(0,229,255,.3);
+  }
+  .btn-cyan:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(0,229,255,.45); }
+  .btn-outline {
+    background: transparent; color: var(--text);
+    border: 1px solid var(--border-h);
+  }
+  .btn-outline:hover { border-color: var(--v); color: var(--v); transform: translateY(-2px); }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    padding: 16px 0;
+    background: rgba(7,8,15,.85);
+    backdrop-filter: blur(24px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; }
+
+  .nav-logo {
+    font-family: var(--font-d);
+    font-size: 28px; letter-spacing: .08em;
+    color: var(--white);
+  }
+  .nav-logo em { color: var(--v); font-style: normal; }
+
+  .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+  .nav-links a { font-size: 13px; font-weight: 500; color: var(--muted); transition: color .2s; }
+  .nav-links a:hover { color: var(--white); }
+
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 130px 0 80px;
+    position: relative; overflow: hidden;
+  }
+
+  /* background grid */
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black, transparent);
+  }
+
+  /* glow */
+  .hero-glow {
+    position: absolute; pointer-events: none;
+    border-radius: 50%;
+  }
+  .glow-1 {
+    width: 900px; height: 900px;
+    background: radial-gradient(circle, rgba(0,112,243,.14) 0%, transparent 65%);
+    top: -350px; right: -200px;
+  }
+  .glow-2 {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,229,255,.1) 0%, transparent 65%);
+    bottom: -200px; left: -100px;
+  }
+
+  .hero-inner {
+    display: grid; grid-template-columns: 1fr 1fr;
+    align-items: center; gap: 60px;
+    position: relative; z-index: 1;
+  }
+
+  .hero-left { display: flex; flex-direction: column; gap: 28px; }
+
+  .hero-title-wrap { display: flex; flex-direction: column; gap: 0; }
+
+  .hero-sub {
+    font-size: 15px; color: var(--muted);
+    max-width: 420px; line-height: 1.8;
+  }
+
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  .hero-metrics {
+    display: flex; gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    width: fit-content;
+  }
+  .metric {
+    padding: 16px 28px;
+    border-right: 1px solid var(--border);
+  }
+  .metric:last-child { border-right: none; }
+  .metric-n {
+    font-family: var(--font-d);
+    font-size: 28px; color: var(--white);
+    letter-spacing: .02em; line-height: 1;
+  }
+  .metric-n .unit { color: var(--v); }
+  .metric-l { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ─── HERO VISUAL ─── */
+  .hero-right { position: relative; display: flex; justify-content: center; }
+
+  .phone-scene { position: relative; animation: levitate 5s ease-in-out infinite; }
+  @keyframes levitate { 0%,100%{transform:translateY(0) rotate(-2deg)} 50%{transform:translateY(-20px) rotate(-2deg)} }
+
+  .phone {
+    width: 250px; height: 510px;
+    background: var(--surface);
+    border-radius: 40px;
+    border: 1.5px solid rgba(0,229,255,.2);
+    box-shadow:
+      0 80px 160px rgba(0,0,0,.7),
+      0 0 0 1px rgba(255,255,255,.04),
+      inset 0 1px 0 rgba(255,255,255,.07),
+      0 0 80px rgba(0,229,255,.06);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+
+  .p-bar {
+    height: 28px; background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .p-pill { width: 70px; height: 6px; background: #1a1d2e; border-radius: 10px; }
+
+  .p-body {
+    flex: 1; padding: 14px 14px 20px;
+    display: flex; flex-direction: column; gap: 9px;
+    overflow: hidden;
+  }
+
+  .p-top { display: flex; align-items: center; justify-content: space-between; }
+  .p-app-name { font-family: var(--font-d); font-size: 18px; color: var(--white); letter-spacing: .08em; }
+  .p-app-name em { color: var(--v); font-style: normal; }
+  .p-notif {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: rgba(0,229,255,.1); border: 1px solid rgba(0,229,255,.2);
+    display: flex; align-items: center; justify-content: center; font-size: 13px;
+  }
+
+  .p-hero-card {
+    background: linear-gradient(135deg, rgba(0,112,243,.5), rgba(121,40,202,.4));
+    border: 1px solid rgba(0,229,255,.15);
+    border-radius: 16px; padding: 16px;
+  }
+  .p-label { font-size: 9px; text-transform: uppercase; letter-spacing: .1em; color: rgba(255,255,255,.5); margin-bottom: 4px; }
+  .p-amount { font-family: var(--font-d); font-size: 28px; color: #fff; letter-spacing: .02em; line-height: 1; }
+  .p-change { font-size: 10px; color: #4ade80; margin-top: 6px; }
+
+  .p-spark {
+    display: flex; align-items: flex-end; gap: 3px;
+    height: 28px; margin-top: 4px;
+  }
+  .sp { flex: 1; border-radius: 2px; background: rgba(0,229,255,.15); }
+  .sp.on { background: var(--v); }
+
+  .p-row2 { display: flex; gap: 8px; }
+  .p-mini-card {
+    flex: 1; background: var(--surface2);
+    border: 1px solid var(--border); border-radius: 12px;
+    padding: 10px 10px; text-align: center;
+  }
+  .p-mini-icon { font-size: 16px; margin-bottom: 3px; }
+  .p-mini-val { font-family: var(--font-d); font-size: 15px; color: var(--white); }
+  .p-mini-lbl { font-size: 8px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+
+  .p-section-label { font-size: 9px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+
+  .p-tx { display: flex; flex-direction: column; gap: 5px; }
+  .p-tx-row {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 9px; padding: 7px 10px;
+  }
+  .p-tx-icon { font-size: 12px; }
+  .p-tx-name { font-size: 10px; color: var(--text); flex: 1; }
+  .p-tx-val { font-family: var(--font-d); font-size: 12px; color: #4ade80; }
+  .p-tx-val.neg { color: #f87171; }
+
+  /* floating pills */
+  .pill {
+    position: absolute;
+    background: var(--surface2);
+    border: 1px solid var(--border-h);
+    border-radius: 12px; padding: 10px 14px;
+    font-size: 12px; white-space: nowrap;
+    box-shadow: 0 20px 40px rgba(0,0,0,.5);
+  }
+  .pill-v { font-family: var(--font-d); font-size: 14px; color: var(--white); }
+  .pill-s { font-size: 10px; color: var(--muted); }
+
+  .pill-a { left: -120px; top: 80px; animation: levitate 5s ease-in-out 1.5s infinite; }
+  .pill-b { right: -110px; bottom: 120px; animation: levitate 5s ease-in-out 3s infinite; }
+
+  /* ─── MARQUEE ─── */
+  .marquee-wrap {
+    padding: 48px 0; overflow: hidden;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .marquee-track {
+    display: flex; gap: 64px; align-items: center;
+    animation: scroll 22s linear infinite;
+    width: max-content;
+  }
+  @keyframes scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+  .marquee-item {
+    font-family: var(--font-d); font-size: 20px;
+    color: rgba(255,255,255,.15); letter-spacing: .08em;
+    white-space: nowrap; transition: color .3s;
+  }
+  .sep { color: var(--v); font-size: 14px; opacity: .4; }
+
+  /* ─── FEATURES ─── */
+  .features { padding: 130px 0; }
+
+  .features-top {
+    display: grid; grid-template-columns: 1fr 1fr;
+    align-items: end; gap: 60px; margin-bottom: 72px;
+  }
+
+  .feat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto auto;
+    gap: 2px;
+  }
+
+  .feat {
+    background: var(--surface);
+    padding: 32px 28px;
+    transition: background .3s;
+    position: relative; overflow: hidden;
+  }
+  .feat:hover { background: var(--surface2); }
+
+  /* rounded corners on grid edges */
+  .feat:nth-child(1) { border-radius: var(--r) 0 0 0; }
+  .feat:nth-child(3) { border-radius: 0 var(--r) 0 0; }
+  .feat:nth-child(4) { border-radius: 0 0 0 var(--r); }
+  .feat:nth-child(6) { border-radius: 0 0 var(--r) 0; }
+
+  .feat-accent-line {
+    position: absolute; top: 0; left: 32px; right: 32px;
+    height: 1px; background: var(--vg); opacity: 0;
+    transition: opacity .3s;
+  }
+  .feat:hover .feat-accent-line { opacity: 1; }
+
+  .feat-icon {
+    font-size: 24px; margin-bottom: 16px;
+    width: 48px; height: 48px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0,229,255,.07);
+    border-radius: 12px;
+  }
+  .feat-title {
+    font-family: var(--font-d); font-size: 20px;
+    color: var(--white); letter-spacing: .03em;
+    margin-bottom: 8px;
+  }
+  .feat-desc { font-size: 14px; color: var(--muted); line-height: 1.75; }
+
+  /* ─── HOW ─── */
+  .how { padding: 130px 0; background: var(--bg2); }
+
+  .how-inner {
+    display: grid; grid-template-columns: 1.1fr 1fr;
+    gap: 80px; align-items: center;
+  }
+
+  .how-visual {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px; overflow: hidden;
+  }
+
+  .how-vis-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .wd { width: 10px; height: 10px; border-radius: 50%; }
+  .wd.r{background:#ff5f57} .wd.y{background:#febc2e} .wd.g{background:#28c840}
+  .wt { font-size: 12px; color: var(--muted); margin-left: 6px; }
+
+  .how-vis-body { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+
+  .vis-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px;
+    background: var(--bg2); border-radius: 10px;
+    border: 1px solid var(--border);
+    transition: border-color .3s;
+  }
+  .vis-row:hover { border-color: rgba(0,229,255,.2); }
+
+  .vis-av {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; flex-shrink: 0;
+  }
+  .vis-info { flex: 1; }
+  .vis-name { font-size: 13px; font-weight: 600; color: var(--white); }
+  .vis-detail { font-size: 11px; color: var(--muted); }
+  .vis-val { font-family: var(--font-d); font-size: 16px; letter-spacing: .03em; }
+  .pos{color:#4ade80} .neg{color:#f87171}
+
+  .vis-stat-row {
+    display: flex; gap: 8px; margin-top: 4px;
+  }
+  .vis-stat {
+    flex: 1; background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px;
+  }
+  .vs-n { font-family: var(--font-d); font-size: 22px; color: var(--white); line-height: 1; }
+  .vs-n .cu { color: var(--v); }
+  .vs-l { font-size: 10px; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: .08em; }
+
+  .how-steps { display: flex; flex-direction: column; gap: 0; margin-top: 40px; }
+  .step {
+    display: flex; gap: 20px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .step:last-child { border-bottom: none; }
+
+  .step-num {
+    font-family: var(--font-d); font-size: 36px;
+    color: var(--v); line-height: 1; flex-shrink: 0;
+    width: 32px;
+  }
+  .step h4 {
+    font-family: var(--font-d); font-size: 18px;
+    color: var(--white); letter-spacing: .03em; margin-bottom: 6px;
+  }
+  .step p { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+  /* ─── TESTIMONIALS ─── */
+  .testimonials { padding: 130px 0; }
+
+  .testi-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 56px; }
+
+  .testi-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+  }
+
+  .testi {
+    background: var(--surface); padding: 32px 28px;
+    position: relative; overflow: hidden;
+    transition: background .3s;
+  }
+  .testi:hover { background: var(--surface2); }
+  .testi:first-child { border-radius: var(--r) 0 0 var(--r); }
+  .testi:last-child { border-radius: 0 var(--r) var(--r) 0; }
+
+  .testi-quote {
+    font-family: var(--font-d); font-size: 56px; line-height: 1;
+    color: var(--v); opacity: .2; position: absolute;
+    top: 16px; right: 24px;
+  }
+
+  .stars { color: var(--v); font-size: 12px; letter-spacing: 2px; margin-bottom: 16px; }
+
+  .testi-text {
+    font-size: 15px; color: var(--muted);
+    line-height: 1.8; margin-bottom: 28px; font-style: italic;
+  }
+
+  .testi-author { display: flex; align-items: center; gap: 12px; }
+  .av {
+    width: 38px; height: 38px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: #000; flex-shrink: 0;
+  }
+  .av-name { font-size: 13px; font-weight: 600; color: var(--white); }
+  .av-role { font-size: 11px; color: var(--muted); }
+
+  /* ─── PRICING ─── */
+  .pricing { padding: 130px 0; background: var(--bg2); }
+
+  .pricing-header { text-align: center; margin-bottom: 64px; }
+  .pricing-header .section-p { margin: 0 auto; }
+
+  .pricing-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 2px; align-items: stretch;
+  }
+
+  .price {
+    background: var(--surface); padding: 36px 30px;
+    transition: background .3s; display: flex; flex-direction: column;
+  }
+  .price:first-child { border-radius: var(--r) 0 0 var(--r); }
+  .price:last-child { border-radius: 0 var(--r) var(--r) 0; }
+  .price.hot {
+    background: linear-gradient(160deg, #0d1525, #111928);
+    border: 1px solid rgba(0,229,255,.2);
+    border-radius: var(--r); margin: -1px;
+    box-shadow: 0 0 60px rgba(0,229,255,.07);
+  }
+
+  .hot-badge {
+    display: inline-block; background: var(--v); color: #000;
+    font-size: 10px; font-weight: 700; letter-spacing: .1em;
+    text-transform: uppercase; border-radius: 100px;
+    padding: 3px 12px; margin-bottom: 20px; width: fit-content;
+  }
+
+  .plan-n {
+    font-family: var(--font-d); font-size: 24px;
+    color: var(--white); letter-spacing: .05em; margin-bottom: 8px;
+  }
+  .plan-d { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
+  .plan-p {
+    font-family: var(--font-d); font-size: 52px;
+    color: var(--white); line-height: 1; margin-bottom: 4px;
+  }
+  .plan-p sub { font-size: 20px; color: var(--muted); font-family: var(--font-b); }
+  .plan-per { font-size: 12px; color: var(--muted); margin-bottom: 32px; }
+
+  .plan-feats { list-style: none; display: flex; flex-direction: column; gap: 11px; margin-bottom: 32px; flex: 1; }
+  .plan-feats li { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
+  .ck { color: var(--v); font-size: 15px; }
+  .cx { color: #2a2d3a; }
+
+  .plan-btn {
+    width: 100%; padding: 13px; border-radius: 100px;
+    font-family: var(--font-b); font-size: 14px; font-weight: 600;
+    cursor: pointer; border: none; transition: all .22s; letter-spacing: .02em;
+  }
+  .plan-btn-cyan { background: var(--v); color: #000; box-shadow: 0 0 30px rgba(0,229,255,.25); }
+  .plan-btn-cyan:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(0,229,255,.4); }
+  .plan-btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border-h); }
+  .plan-btn-ghost:hover { border-color: var(--v); color: var(--v); transform: translateY(-2px); }
+
+  /* ─── FAQ ─── */
+  .faq { padding: 130px 0; }
+  .faq-inner { display: grid; grid-template-columns: 1fr 1.5fr; gap: 80px; align-items: start; }
+  .faq-sticky { position: sticky; top: 100px; }
+
+  .faq-list { display: flex; flex-direction: column; gap: 2px; margin-top: 40px; }
+
+  .faq-item {
+    background: var(--surface); border-radius: var(--r);
+    overflow: hidden; transition: background .3s;
+  }
+  .faq-item.open { background: var(--surface2); }
+
+  .faq-btn {
+    width: 100%; background: none; border: none;
+    padding: 20px 22px; display: flex;
+    align-items: center; justify-content: space-between; gap: 16px;
+    cursor: pointer; color: var(--white);
+    font-family: var(--font-b); font-size: 15px;
+    font-weight: 500; text-align: left; transition: color .2s;
+  }
+  .faq-btn:hover { color: var(--v); }
+
+  .faq-icon {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: rgba(255,255,255,.06);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; flex-shrink: 0;
+    transition: transform .3s, background .3s;
+    color: var(--muted);
+  }
+  .faq-item.open .faq-icon { transform: rotate(45deg); background: var(--v); color: #000; }
+
+  .faq-ans { max-height: 0; overflow: hidden; transition: max-height .4s ease; }
+  .faq-item.open .faq-ans { max-height: 160px; }
+  .faq-ans-inner { padding: 0 22px 20px; font-size: 14px; color: var(--muted); line-height: 1.8; }
+
+  /* ─── CTA ─── */
+  .cta { padding: 130px 0; background: var(--bg2); }
+  .cta-box {
+    border: 1px solid rgba(0,229,255,.12);
+    border-radius: 24px; padding: 90px 60px;
+    text-align: center; position: relative; overflow: hidden;
+    background: var(--surface);
+  }
+  .cta-box::before {
+    content: '';
+    position: absolute; width: 600px; height: 400px;
+    background: radial-gradient(ellipse, rgba(0,112,243,.12), transparent 70%);
+    top: -200px; left: 50%; transform: translateX(-50%);
+    pointer-events: none;
+  }
+  .cta-box::after {
+    content: '';
+    position: absolute; width: 400px; height: 400px;
+    background: radial-gradient(ellipse, rgba(0,229,255,.07), transparent 70%);
+    bottom: -200px; left: 50%; transform: translateX(-50%);
+    pointer-events: none;
+  }
+  .cta-inner-z { position: relative; z-index: 1; }
+
+  .cta-display {
+    font-family: var(--font-d);
+    font-size: clamp(48px, 8vw, 80px);
+    color: var(--white); line-height: .95;
+    letter-spacing: .02em; margin: 20px 0 16px;
+  }
+  .cta-display .cy { color: var(--v); }
+
+  .cta-p { font-size: 16px; color: var(--muted); margin-bottom: 40px; }
+
+  .store-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .store {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--surface2); border: 1px solid var(--border-h);
+    border-radius: 14px; padding: 14px 22px;
+    transition: all .22s; cursor: pointer;
+  }
+  .store:hover { border-color: var(--v); transform: translateY(-3px); box-shadow: 0 0 30px rgba(0,229,255,.1); }
+  .store-i { font-size: 22px; }
+  .store-s { font-size: 10px; color: var(--muted); }
+  .store-n { font-family: var(--font-d); font-size: 16px; color: var(--white); letter-spacing: .05em; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: #111;
+    border-top: 1px solid rgba(255,255,255,.05);
+    padding: 24px 0;
+  }
+  .footer-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+  }
+  .footer-brand {
+    font-family: var(--font-d); font-size: 20px;
+    color: var(--white); letter-spacing: .1em;
+  }
+  .footer-brand em { color: var(--v); font-style: normal; }
+  .footer-c { text-align: center; font-size: 13px; color: rgba(255,255,255,.3); }
+  .footer-adm {
+    text-align: right; font-size: 13px;
+    color: rgba(255,255,255,.3); cursor: pointer; transition: color .2s;
+  }
+  .footer-adm:hover { color: var(--v); }
+
+  /* ─── SCROLL REVEAL ─── */
+  .r { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+  .r.in { opacity: 1; transform: translateY(0); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 920px) {
+    .hero-inner, .how-inner, .faq-inner, .features-top { grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    .feat-grid, .testi-grid, .pricing-grid { grid-template-columns: 1fr; gap: 2px; }
+    .feat:nth-child(n), .testi:nth-child(n), .price:nth-child(n) { border-radius: var(--r); }
+    .price.hot { margin: 0; }
+    .nav-links { display: none; }
+    .footer-grid { grid-template-columns: 1fr; gap: 8px; text-align: center; }
+    .footer-adm { text-align: center; }
+    .testi-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+    .cta-box { padding: 60px 24px; }
+    .how-inner { gap: 48px; }
+    .features-top { gap: 32px; }
+    .hero-metrics { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="container">
+    <div class="nav-inner">
+      <div class="nav-logo">VEL<em>O</em></div>
+      <ul class="nav-links">
+        <li><a href="#features">Recursos</a></li>
+        <li><a href="#how">Como funciona</a></li>
+        <li><a href="#pricing">Planos</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <div class="nav-right">
+        <a href="#" class="btn btn-outline" style="padding:10px 20px;font-size:13px;">Entrar</a>
+        <a href="#" class="btn btn-cyan" style="padding:10px 20px;font-size:13px;">Começar grátis</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow glow-1"></div>
+  <div class="hero-glow glow-2"></div>
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-left">
+        <div><div class="chip">Novo — versão 2.0 disponível</div></div>
+        <div class="hero-title-wrap">
+          <div class="display">Move<br><span class="cyan">rápido.</span><br><span class="stroke">Cresce</span><br>mais.</div>
+        </div>
+        <p class="hero-sub">Velo é a plataforma que acelera cada decisão do seu negócio. Dashboard, automações e integrações — tudo em velocidade máxima.</p>
+        <div class="hero-actions">
+          <a href="#" class="btn btn-cyan">Começar grátis →</a>
+          <a href="#" class="btn btn-outline">Ver demo</a>
+        </div>
+        <div class="hero-metrics">
+          <div class="metric">
+            <div class="metric-n">98<span class="unit">k</span></div>
+            <div class="metric-l">Usuários ativos</div>
+          </div>
+          <div class="metric">
+            <div class="metric-n">4.<span class="unit">9</span></div>
+            <div class="metric-l">Avaliação</div>
+          </div>
+          <div class="metric">
+            <div class="metric-n">99<span class="unit">%</span></div>
+            <div class="metric-l">Uptime</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="pill pill-a">
+          <div class="pill-v">+R$ 4.200</div>
+          <div class="pill-s">Pagamento recebido agora</div>
+        </div>
+        <div class="phone-scene">
+          <div class="phone">
+            <div class="p-bar"><div class="p-pill"></div></div>
+            <div class="p-body">
+              <div class="p-top">
+                <div class="p-app-name">VEL<em>O</em></div>
+                <div class="p-notif">🔔</div>
+              </div>
+              <div class="p-hero-card">
+                <div class="p-label">Receita do mês</div>
+                <div class="p-amount">R$ 48.920</div>
+                <div class="p-change">↑ 24% em relação ao mês anterior</div>
+                <div class="p-spark">
+                  <div class="sp" style="height:35%"></div>
+                  <div class="sp" style="height:55%"></div>
+                  <div class="sp" style="height:42%"></div>
+                  <div class="sp" style="height:70%"></div>
+                  <div class="sp" style="height:48%"></div>
+                  <div class="sp on" style="height:90%"></div>
+                  <div class="sp" style="height:65%"></div>
+                  <div class="sp on" style="height:100%"></div>
+                </div>
+              </div>
+              <div class="p-row2">
+                <div class="p-mini-card">
+                  <div class="p-mini-icon">📦</div>
+                  <div class="p-mini-val">312</div>
+                  <div class="p-mini-lbl">Pedidos</div>
+                </div>
+                <div class="p-mini-card">
+                  <div class="p-mini-icon">⚡</div>
+                  <div class="p-mini-val">18</div>
+                  <div class="p-mini-lbl">Automações</div>
+                </div>
+                <div class="p-mini-card">
+                  <div class="p-mini-icon">🎯</div>
+                  <div class="p-mini-val">97%</div>
+                  <div class="p-mini-lbl">Meta</div>
+                </div>
+              </div>
+              <div class="p-section-label">Últimas transações</div>
+              <div class="p-tx">
+                <div class="p-tx-row">
+                  <div class="p-tx-icon">🛒</div>
+                  <div class="p-tx-name">Loja São Paulo</div>
+                  <div class="p-tx-val">+R$1.240</div>
+                </div>
+                <div class="p-tx-row">
+                  <div class="p-tx-icon">💸</div>
+                  <div class="p-tx-name">Taxa operacional</div>
+                  <div class="p-tx-val neg">−R$80</div>
+                </div>
+                <div class="p-tx-row">
+                  <div class="p-tx-icon">🔄</div>
+                  <div class="p-tx-name">Assinatura Pro</div>
+                  <div class="p-tx-val">+R$790</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pill pill-b">
+          <div class="pill-v">34 pedidos</div>
+          <div class="pill-s">Automação ativa hoje</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── MARQUEE ── -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="marquee-item">VELOCIDADE</span><span class="sep">◆</span>
+    <span class="marquee-item">CLAREZA</span><span class="sep">◆</span>
+    <span class="marquee-item">AUTOMAÇÃO</span><span class="sep">◆</span>
+    <span class="marquee-item">CRESCIMENTO</span><span class="sep">◆</span>
+    <span class="marquee-item">INTEGRAÇÃO</span><span class="sep">◆</span>
+    <span class="marquee-item">PERFORMANCE</span><span class="sep">◆</span>
+    <span class="marquee-item">VELO</span><span class="sep">◆</span>
+    <span class="marquee-item">VELOCIDADE</span><span class="sep">◆</span>
+    <span class="marquee-item">CLAREZA</span><span class="sep">◆</span>
+    <span class="marquee-item">AUTOMAÇÃO</span><span class="sep">◆</span>
+    <span class="marquee-item">CRESCIMENTO</span><span class="sep">◆</span>
+    <span class="marquee-item">INTEGRAÇÃO</span><span class="sep">◆</span>
+    <span class="marquee-item">PERFORMANCE</span><span class="sep">◆</span>
+    <span class="marquee-item">VELO</span><span class="sep">◆</span>
+  </div>
+</div>
+
+<!-- ── FEATURES ── -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="features-top r">
+      <div>
+        <span class="section-tag">// recursos</span>
+        <h2 class="section-h">Tudo que você<br>precisa. Zero frescura.</h2>
+      </div>
+      <p class="section-p">Ferramentas poderosas com uma única missão: fazer você mover mais rápido do que a concorrência.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat r">
+        <div class="feat-accent-line"></div>
+        <div class="feat-icon">📊</div>
+        <div class="feat-title">Dashboard em tempo real</div>
+        <p class="feat-desc">Métricas, vendas e KPIs atualizados ao vivo. Zero delay, zero enrolação.</p>
+      </div>
+      <div class="feat r" style="transition-delay:.08s">
+        <div class="feat-accent-line"></div>
+        <div class="feat-icon">⚡</div>
+        <div class="feat-title">Automações inteligentes</div>
+        <p class="feat-desc">Configure uma vez, deixa rolar. O Velo trabalha por você enquanto você foca no que importa.</p>
+      </div>
+      <div class="feat r" style="transition-delay:.16s">
+        <div class="feat-accent-line"></div>
+        <div class="feat-icon">🔗</div>
+        <div class="feat-title">200+ integrações nativas</div>
+        <p class="feat-desc">Stripe, Notion, Slack, Google — conecta tudo em dois cliques, sem código.</p>
+      </div>
+      <div class="feat r" style="transition-delay:.08s">
+        <div class="feat-accent-line"></div>
+        <div class="feat-icon">🔒</div>
+        <div class="feat-title">Segurança enterprise</div>
+        <p class="feat-desc">Criptografia AES-256, 2FA, SSO e conformidade total com LGPD.</p>
+      </div>
+      <div class="feat r" style="transition-delay:.16s">
+        <div class="feat-accent-line"></div>
+        <div class="feat-icon">📱</div>
+        <div class="feat-title">Mobile-first</div>
+        <p class="feat-desc">iOS e Android nativos. Gerencie sua operação de onde estiver, sem comprometer nada.</p>
+      </div>
+      <div class="feat r" style="transition-delay:.24s">
+        <div class="feat-accent-line"></div>
+        <div class="feat-icon">🤝</div>
+        <div class="feat-title">Colaboração em equipe</div>
+        <p class="feat-desc">Permissões granulares, workspaces separados e histórico completo de ações.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW ── -->
+<section class="how" id="how">
+  <div class="container">
+    <div class="how-inner">
+      <div class="how-visual r">
+        <div class="how-vis-header">
+          <div class="wd r"></div><div class="wd y"></div><div class="wd g"></div>
+          <span class="wt">app.usevelo.com.br</span>
+        </div>
+        <div class="how-vis-body">
+          <div class="vis-row">
+            <div class="vis-av" style="background:linear-gradient(135deg,#00E5FF,#0070F3)">🛒</div>
+            <div class="vis-info">
+              <div class="vis-name">Loja São Paulo</div>
+              <div class="vis-detail">Atualizado há 1 min</div>
+            </div>
+            <div class="vis-val pos">+R$4.200</div>
+          </div>
+          <div class="vis-row">
+            <div class="vis-av" style="background:linear-gradient(135deg,#7928CA,#00E5FF)">📦</div>
+            <div class="vis-info">
+              <div class="vis-name">Estoque Sul</div>
+              <div class="vis-detail">12 itens críticos</div>
+            </div>
+            <div class="vis-val neg">Alerta</div>
+          </div>
+          <div class="vis-row">
+            <div class="vis-av" style="background:linear-gradient(135deg,#4ade80,#0070F3)">⚡</div>
+            <div class="vis-info">
+              <div class="vis-name">Automações rodando</div>
+              <div class="vis-detail">18 fluxos ativos hoje</div>
+            </div>
+            <div class="vis-val pos">Ativo</div>
+          </div>
+          <div class="vis-stat-row">
+            <div class="vis-stat">
+              <div class="vs-n">98<span class="cu">%</span></div>
+              <div class="vs-l">Uptime</div>
+            </div>
+            <div class="vis-stat">
+              <div class="vs-n">2.<span class="cu">1s</span></div>
+              <div class="vs-l">Tempo médio</div>
+            </div>
+            <div class="vis-stat">
+              <div class="vs-n">312</div>
+              <div class="vs-l">Pedidos hoje</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <span class="section-tag">// como funciona</span>
+        <h2 class="section-h">Pronto em<br>minutos.</h2>
+        <div class="how-steps">
+          <div class="step r">
+            <div class="step-num">01</div>
+            <div>
+              <h4>Crie sua conta</h4>
+              <p>Menos de 2 minutos. Sem cartão de crédito. Sem letra miúda.</p>
+            </div>
+          </div>
+          <div class="step r" style="transition-delay:.15s">
+            <div class="step-num">02</div>
+            <div>
+              <h4>Configure em um clique</h4>
+              <p>Importe seus dados, conecte suas ferramentas e personalize o painel ao seu jeito.</p>
+            </div>
+          </div>
+          <div class="step r" style="transition-delay:.3s">
+            <div class="step-num">03</div>
+            <div>
+              <h4>Ligue e acelere</h4>
+              <p>Ative as automações e deixa o Velo trabalhar. Relatórios, alertas, ações — tudo automático.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TESTIMONIALS ── -->
+<section class="testimonials">
+  <div class="container">
+    <div class="testi-header r">
+      <div>
+        <span class="section-tag">// depoimentos</span>
+        <h2 class="section-h">98k pessoas já<br>aceleraram.</h2>
+      </div>
+      <a href="#" class="btn btn-outline">Ver todos →</a>
+    </div>
+    <div class="testi-grid">
+      <div class="testi r">
+        <div class="testi-quote">"</div>
+        <div class="stars">★★★★★</div>
+        <p class="testi-text">"Reduziu 60% do tempo que eu gastava em tarefas manuais. O dashboard é absurdamente rápido e as automações funcionam de verdade."</p>
+        <div class="testi-author">
+          <div class="av" style="background:var(--v)">AM</div>
+          <div>
+            <div class="av-name">Ana Mendes</div>
+            <div class="av-role">CEO — Studio Criativo</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi r" style="transition-delay:.12s">
+        <div class="testi-quote">"</div>
+        <div class="stars">★★★★★</div>
+        <p class="testi-text">"Interface linda, mobile impecável, suporte que realmente responde. Nunca tive tanta visibilidade da operação inteira."</p>
+        <div class="testi-author">
+          <div class="av" style="background:#0070F3">RC</div>
+          <div>
+            <div class="av-name">Rafael Costa</div>
+            <div class="av-role">Cofundador — Nexara Tech</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi r" style="transition-delay:.24s">
+        <div class="testi-quote">"</div>
+        <div class="stars">★★★★★</div>
+        <p class="testi-text">"Integração com Stripe e notificações automáticas mudaram meu negócio. Recomendo sem hesitar pra qualquer empreendedor."</p>
+        <div class="testi-author">
+          <div class="av" style="background:#7928CA">JL</div>
+          <div>
+            <div class="av-name">Julia Lima</div>
+            <div class="av-role">Fundadora — LojaMax</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PRICING ── -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="pricing-header r">
+      <span class="section-tag">// planos</span>
+      <h2 class="section-h">Simples. Transparente.<br>Sem pegadinha.</h2>
+      <p class="section-p">Comece grátis, escale quando precisar. Cancele quando quiser.</p>
+    </div>
+    <div class="pricing-grid r">
+      <div class="price">
+        <div class="plan-n">Gratuito</div>
+        <div class="plan-d">Para quem está começando</div>
+        <div class="plan-p">R$0 <sub>/mês</sub></div>
+        <div class="plan-per">Para sempre gratuito</div>
+        <ul class="plan-feats">
+          <li><span class="ck">✓</span> 1 workspace</li>
+          <li><span class="ck">✓</span> Até 100 registros</li>
+          <li><span class="ck">✓</span> Dashboard básico</li>
+          <li><span class="cx">✗</span> Automações</li>
+          <li><span class="cx">✗</span> Integrações avançadas</li>
+        </ul>
+        <button class="plan-btn plan-btn-ghost">Começar grátis</button>
+      </div>
+      <div class="price hot">
+        <div class="hot-badge">Mais popular</div>
+        <div class="plan-n">Pro</div>
+        <div class="plan-d">Para negócios em crescimento</div>
+        <div class="plan-p">R$79 <sub>/mês</sub></div>
+        <div class="plan-per">Cobrado mensalmente</div>
+        <ul class="plan-feats">
+          <li><span class="ck">✓</span> Workspaces ilimitados</li>
+          <li><span class="ck">✓</span> Registros ilimitados</li>
+          <li><span class="ck">✓</span> Dashboard avançado</li>
+          <li><span class="ck">✓</span> Automações completas</li>
+          <li><span class="ck">✓</span> 200+ integrações</li>
+        </ul>
+        <button class="plan-btn plan-btn-cyan">Assinar Pro</button>
+      </div>
+      <div class="price">
+        <div class="plan-n">Enterprise</div>
+        <div class="plan-d">Para grandes operações</div>
+        <div class="plan-p">R$299 <sub>/mês</sub></div>
+        <div class="plan-per">Por usuário, cobrado anualmente</div>
+        <ul class="plan-feats">
+          <li><span class="ck">✓</span> Tudo do Pro</li>
+          <li><span class="ck">✓</span> SSO & SAML</li>
+          <li><span class="ck">✓</span> SLA dedicado</li>
+          <li><span class="ck">✓</span> Onboarding personalizado</li>
+          <li><span class="ck">✓</span> Suporte prioritário 24/7</li>
+        </ul>
+        <button class="plan-btn plan-btn-ghost">Falar com vendas</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FAQ ── -->
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="faq-inner">
+      <div class="faq-sticky">
+        <span class="section-tag">// dúvidas</span>
+        <h2 class="section-h">Perguntas<br>frequentes.</h2>
+        <p class="section-p" style="margin-top:16px">Não encontrou o que procura? Nosso time responde em minutos.</p>
+        <a href="#" class="btn btn-cyan" style="margin-top:32px">Falar com suporte →</a>
+      </div>
+      <div class="faq-list r">
+        <div class="faq-item open">
+          <button class="faq-btn">Posso cancelar a qualquer momento? <div class="faq-icon">+</div></button>
+          <div class="faq-ans"><div class="faq-ans-inner">Sim. Cancele direto pelo painel, sem multa, sem burocracia. Seus dados ficam disponíveis por 30 dias após o cancelamento.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-btn">O plano gratuito tem limite de tempo? <div class="faq-icon">+</div></button>
+          <div class="faq-ans"><div class="faq-ans-inner">Não. O gratuito é permanente — sem trial, sem cartão, sem armadilha. Fique quanto quiser dentro dos limites.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-btn">Meus dados ficam seguros? <div class="faq-icon">+</div></button>
+          <div class="faq-ans"><div class="faq-ans-inner">Criptografia AES-256 em repouso, TLS 1.3 em trânsito. Conformidade total com LGPD. Não vendemos dados para ninguém.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-btn">Funciona offline? <div class="faq-icon">+</div></button>
+          <div class="faq-ans"><div class="faq-ans-inner">O app mobile tem modo offline para consulta de dados. Automações e sincronização exigem conexão com internet.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-btn">Como funcionam as integrações? <div class="faq-icon">+</div></button>
+          <div class="faq-ans"><div class="faq-ans-inner">São 200+ integrações nativas com um clique — Stripe, Notion, Slack, Google, WhatsApp e mais. Sem código, sem complicação.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="cta">
+  <div class="container">
+    <div class="cta-box r">
+      <div class="cta-inner-z">
+        <div class="chip">Comece hoje</div>
+        <div class="cta-display">Pronto para<br>acelerar<span class="cy">?</span></div>
+        <p class="cta-p">98 mil usuários já economizam horas por semana. Agora é a sua vez.</p>
+        <div class="store-row">
+          <div class="store">
+            <div class="store-i">🍎</div>
+            <div><div class="store-s">Baixar na</div><div class="store-n">App Store</div></div>
+          </div>
+          <div class="store">
+            <div class="store-i">🤖</div>
+            <div><div class="store-s">Disponível no</div><div class="store-n">Google Play</div></div>
+          </div>
+          <div class="store">
+            <div class="store-i">🌐</div>
+            <div><div class="store-s">Acessar via</div><div class="store-n">Web App</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">VEL<em>O</em></div>
+      <div class="footer-c">© 2026 pagio. Todos os direitos reservados.</div>
+      <div class="footer-adm">Área administrativa</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.r').forEach(el => obs.observe(el));
+
+  // FAQ
+  document.querySelectorAll('.faq-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+</script>
+</body>
+</html>
