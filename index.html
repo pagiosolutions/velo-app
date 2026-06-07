@@ -634,7 +634,7 @@
     padding: 24px 0;
   }
   .footer-grid {
-    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    display: grid; grid-template-columns: 1fr 1fr;
     align-items: center;
   }
   .footer-brand {
@@ -642,12 +642,106 @@
     color: var(--white); letter-spacing: .1em;
   }
   .footer-brand em { color: var(--v); font-style: normal; }
-  .footer-c { text-align: center; font-size: 13px; color: rgba(255,255,255,.3); }
-  .footer-adm {
-    text-align: right; font-size: 13px;
-    color: rgba(255,255,255,.3); cursor: pointer; transition: color .2s;
+  .footer-c { text-align: right; font-size: 13px; color: rgba(255,255,255,.3); }
+/* ─── CONTACT ACCORDION ─── */
+  .contact { padding: 0 0 80px; }
+
+  .contact-accordion {
+    border: 1px solid var(--border-h);
+    border-radius: 20px;
+    overflow: hidden;
+    background: var(--surface);
+    transition: border-color .3s;
   }
-  .footer-adm:hover { color: var(--v); }
+  .contact-accordion.open { border-color: rgba(0,229,255,.25); }
+
+  .contact-toggle {
+    width: 100%; background: none; border: none;
+    padding: 28px 36px; display: flex;
+    align-items: center; justify-content: space-between; gap: 16px;
+    cursor: pointer; color: var(--white);
+    font-family: var(--font-b); text-align: left;
+    transition: background .2s;
+  }
+  .contact-toggle:hover { background: rgba(255,255,255,.02); }
+
+  .contact-toggle-left { display: flex; align-items: center; gap: 16px; }
+  .contact-toggle-icon {
+    width: 42px; height: 42px; border-radius: 12px;
+    background: rgba(0,229,255,.08); border: 1px solid rgba(0,229,255,.15);
+    display: flex; align-items: center; justify-content: center; font-size: 18px;
+    flex-shrink: 0;
+  }
+  .contact-toggle-text { font-family: var(--font-d); font-size: 22px; letter-spacing: .03em; }
+  .contact-toggle-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  .contact-chevron {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(255,255,255,.06);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: var(--muted); flex-shrink: 0;
+    transition: transform .35s ease, background .3s, color .3s;
+  }
+  .contact-accordion.open .contact-chevron {
+    transform: rotate(180deg);
+    background: var(--v); color: #000;
+  }
+
+  .contact-body {
+    max-height: 0; overflow: hidden;
+    transition: max-height .45s ease;
+  }
+  .contact-accordion.open .contact-body { max-height: 480px; }
+
+  .contact-form-wrap {
+    padding: 0 36px 36px;
+    border-top: 1px solid var(--border);
+  }
+  .contact-form-wrap p {
+    font-size: 14px; color: var(--muted); margin: 20px 0 24px;
+  }
+
+  .form-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 14px; margin-bottom: 14px;
+  }
+  .form-field { display: flex; flex-direction: column; gap: 6px; }
+  .form-field label { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .form-field input, .form-field textarea {
+    background: var(--bg2); border: 1px solid var(--border-h);
+    border-radius: 10px; padding: 12px 14px;
+    color: var(--white); font-family: var(--font-b); font-size: 14px;
+    outline: none; transition: border-color .2s, box-shadow .2s;
+    width: 100%;
+  }
+  .form-field input::placeholder, .form-field textarea::placeholder { color: var(--muted); }
+  .form-field input:focus, .form-field textarea:focus {
+    border-color: rgba(0,229,255,.4);
+    box-shadow: 0 0 0 3px rgba(0,229,255,.06);
+  }
+  .form-field.full { grid-column: 1 / -1; }
+
+  .form-footer { display: flex; align-items: center; justify-content: flex-end; margin-top: 8px; }
+
+  /* ─── TOAST ─── */
+  .toast {
+    position: fixed; bottom: 28px; right: 28px; z-index: 9000;
+    display: flex; align-items: center; gap: 12px;
+    background: #0f1a14; border: 1px solid rgba(74,222,128,.3);
+    border-radius: 14px; padding: 14px 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.6);
+    transform: translateY(20px); opacity: 0;
+    transition: transform .35s ease, opacity .35s ease;
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
+  .toast-icon {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(74,222,128,.15);
+    display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0;
+  }
+  .toast-title { font-size: 14px; font-weight: 600; color: #fff; }
+  .toast-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
 
   /* ─── SCROLL REVEAL ─── */
   .r { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
@@ -662,7 +756,6 @@
     .price.hot { margin: 0; }
     .nav-links { display: none; }
     .footer-grid { grid-template-columns: 1fr; gap: 8px; text-align: center; }
-    .footer-adm { text-align: center; }
     .testi-header { flex-direction: column; align-items: flex-start; gap: 20px; }
     .cta-box { padding: 60px 24px; }
     .how-inner { gap: 48px; }
@@ -685,7 +778,6 @@
         <li><a href="#faq">FAQ</a></li>
       </ul>
       <div class="nav-right">
-        <a href="#" class="btn btn-outline" style="padding:10px 20px;font-size:13px;">Entrar</a>
         <a href="#" class="btn btn-cyan" style="padding:10px 20px;font-size:13px;">Começar grátis</a>
       </div>
     </div>
@@ -1068,7 +1160,7 @@
         <span class="section-tag">// dúvidas</span>
         <h2 class="section-h">Perguntas<br>frequentes.</h2>
         <p class="section-p" style="margin-top:16px">Não encontrou o que procura? Nosso time responde em minutos.</p>
-        <a href="#" class="btn btn-cyan" style="margin-top:32px">Falar com suporte →</a>
+        <a href="#contact" class="btn btn-cyan" style="margin-top:32px" id="openContact">Falar com suporte →</a>
       </div>
       <div class="faq-list r">
         <div class="faq-item open">
@@ -1123,13 +1215,63 @@
   </div>
 </section>
 
+<!-- ── CONTACT ── -->
+<section class="contact" id="contact">
+  <div class="container">
+    <div class="contact-accordion" id="contactAccordion">
+      <button class="contact-toggle" id="contactToggle" aria-expanded="false">
+        <div class="contact-toggle-left">
+          <div class="contact-toggle-icon">💬</div>
+          <div>
+            <div class="contact-toggle-text">Falar com o suporte</div>
+            <div class="contact-toggle-sub">Respondemos em até 5 minutos</div>
+          </div>
+        </div>
+        <div class="contact-chevron">▼</div>
+      </button>
+      <div class="contact-body" id="contactBody">
+        <div class="contact-form-wrap">
+          <p>Preencha os campos abaixo e nosso time entra em contato rapidinho.</p>
+          <form id="contactForm" novalidate>
+            <div class="form-grid">
+              <div class="form-field">
+                <label for="f-name">Nome</label>
+                <input type="text" id="f-name" placeholder="Seu nome completo" required>
+              </div>
+              <div class="form-field">
+                <label for="f-email">E-mail</label>
+                <input type="email" id="f-email" placeholder="seu@email.com" required>
+              </div>
+              <div class="form-field full">
+                <label for="f-subject">Assunto</label>
+                <input type="text" id="f-subject" placeholder="Como podemos ajudar?" required>
+              </div>
+            </div>
+            <div class="form-footer">
+              <button type="submit" class="btn btn-cyan">Enviar mensagem →</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TOAST ── -->
+<div class="toast" id="toast" role="alert">
+  <div class="toast-icon">✓</div>
+  <div>
+    <div class="toast-title">Mensagem enviada!</div>
+    <div class="toast-sub">Nosso time responde em até 5 minutos.</div>
+  </div>
+</div>
+
 <!-- ── FOOTER ── -->
 <footer>
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">VEL<em>O</em></div>
       <div class="footer-c">© 2026 pagio. Todos os direitos reservados.</div>
-      <div class="footer-adm">Área administrativa</div>
     </div>
   </div>
 </footer>
@@ -1149,6 +1291,48 @@
       document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
       if (!isOpen) item.classList.add('open');
     });
+  });
+
+  // Contact accordion
+  const accordion   = document.getElementById('contactAccordion');
+  const toggleBtn   = document.getElementById('contactToggle');
+
+  function openContact() {
+    accordion.classList.add('open');
+    toggleBtn.setAttribute('aria-expanded', 'true');
+  }
+  function closeContact() {
+    accordion.classList.remove('open');
+    toggleBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  toggleBtn.addEventListener('click', () => {
+    accordion.classList.contains('open') ? closeContact() : openContact();
+  });
+
+  // "Falar com suporte" no FAQ rola e abre o accordion
+  document.getElementById('openContact').addEventListener('click', e => {
+    e.preventDefault();
+    document.getElementById('contact').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(openContact, 400);
+  });
+
+  // Formulário — limpa e exibe toast
+  document.getElementById('contactForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const form = e.target;
+    const inputs = form.querySelectorAll('input');
+    let valid = true;
+    inputs.forEach(input => {
+      if (!input.value.trim()) { input.focus(); valid = false; return; }
+    });
+    if (!valid) return;
+
+    inputs.forEach(input => { input.value = ''; });
+
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 4000);
   });
 </script>
 </body>
